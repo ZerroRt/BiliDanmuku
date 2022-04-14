@@ -1,0 +1,23 @@
+{
+  "name": "bilidanmuku",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZerroRt/BiliDanmuku.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZerroRt/BiliDanmuku/issues"
+  },
+  "homepage": "https://github.com/ZerroRt/BiliDanmuku#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "socket.io": "^4.4.1"
+  }
+}
