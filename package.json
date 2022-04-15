@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,14 @@
   },
   "homepage": "https://github.com/ZerroRt/BiliDanmuku#readme",
   "dependencies": {
+    "@types/pako": "^1.0.3",
     "axios": "^0.26.1",
-    "socket.io": "^4.4.1"
+    "pako": "^2.0.4",
+    "socket.io": "^4.4.1",
+    "vue": "^3.2.33"
+  },
+  "devDependencies": {
+    "vite": "^2.9.4",
+    "vite-plugin-ts": "^1.3.2-1"
   }
 }

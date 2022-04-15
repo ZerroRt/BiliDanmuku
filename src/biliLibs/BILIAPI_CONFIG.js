@@ -1,1 +1,0 @@
-export const roomApiGetPath = 'https://api.live.bilibili.com/room/v1/Room/room_init';
