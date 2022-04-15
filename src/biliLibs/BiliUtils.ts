@@ -3,6 +3,11 @@ import { BiliHTTPRequestResult, BiliHTTPRequestResult_CodeOk } from './BiliApiRe
 import { BiliDanmuContent, BiliPresentContent, DecodeSocketDataCallback, DecodeSocketDataResult, SocketDataDanmuData, SocketDataGiftData } from './BiliUtils.interface';
 
 export class BiliUtils {
+    static getRoomNumber(liveHref: string) {
+        const url  = new URL(liveHref)
+
+        return url.pathname.slice(1, url.pathname.length)
+    }
     static stringToBytes(str: string) {
         const bytes = [];
         const len = str.length;
