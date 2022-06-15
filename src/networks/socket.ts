@@ -12,7 +12,7 @@ import { BiliTcpCommand, DecodeSocketDataResult, SocketDataDanmuData, SocketData
 export class SocketModule {
     roomId = ''
 
-    private _socket:WebSocket = undefined;
+    private _socket:WebSocket;
 
     private _pingIntervalTimer = 0;
 
@@ -91,7 +91,7 @@ export class SocketModule {
     
                     if (processData) {
                         if (this.eventMaps.has(command.cmd)) {
-                            this.eventMaps.get(command.cmd).forEach(cb => cb(command.cmd, processData))
+                            this.eventMaps.get(command.cmd)?.forEach(cb => cb(command.cmd, processData))
                         }  
                     }
                 }
@@ -122,22 +122,29 @@ export class SocketModule {
 
         // need get true room_id first
         const roomId = await this._getRoomId();
-        this.roomId = roomId;
-        const webSocketInfo = await this._getWebSocketInfo(roomId);
+        if (roomId) {
+            this.roomId = roomId;
+            const webSocketInfo = await this._getWebSocketInfo(roomId);
+    
+            const tcpAddress = `wss://${webSocketInfo.host}/sub`;
+    
+            this._socket = new WebSocket(tcpAddress);
+    
+            this._startListen();
+            return;
+        }
 
-        const tcpAddress = `wss://${webSocketInfo.host}/sub`;
-
-        this._socket = new WebSocket(tcpAddress);
-
-        this._startListen();
+        throw new Error('请先设置房间id')
     }
 
     // io set listener
     on(eventName: BiliTcpCommand, callback: EventListenerCallback) {
         if (this.eventMaps.has(eventName)) {
             const storedCallbacks = this.eventMaps.get(eventName)
-            if (!storedCallbacks.find((cb) => cb === callback)) {
-                storedCallbacks.push(callback);
+            if (storedCallbacks) {
+                if (!storedCallbacks.find((cb) => cb === callback)) {
+                    storedCallbacks.push(callback);
+                }
             }
         } else {
             this.eventMaps.set(eventName, [callback]);

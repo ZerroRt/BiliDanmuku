@@ -5,7 +5,13 @@ const onDanmu = (
     _,
     payload: BiliDanmuContent
 ) => {
-    console.log(`${payload.user.name}: ${payload.content}`)
+    const { bulgeContent, user, content } = payload;
+
+    if (bulgeContent) {
+        console.log('%c', `background: url('${bulgeContent.url}')`)
+    } else {
+        console.log(`${user.name}: ${content}`)
+    }
 }
 
 const onPresent = (
@@ -15,11 +21,13 @@ const onPresent = (
     console.log(`${payload.user.name} ${payload.giftAction} ${payload.giftName}X${payload.giftNumber}`)
 }
 
+const onSticker = () => {}
+
 
 const start = () => {
 
     // set live room address
-    const liveRoomHref = 'https://live.bilibili.com/213?broadcast_type=0'
+    const liveRoomHref = 'https://live.bilibili.com/23945753'
 
     const roomNumber = BiliUtils.getRoomNumber(liveRoomHref);
 

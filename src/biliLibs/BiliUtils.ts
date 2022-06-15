@@ -1,6 +1,18 @@
 import Pako from 'pako';
 import { BiliHTTPRequestResult, BiliHTTPRequestResult_CodeOk } from './BiliApiResponse.interface.d';
-import { BiliDanmuContent, BiliPresentContent, DecodeSocketDataCallback, DecodeSocketDataResult, SocketDataDanmuData, SocketDataGiftData } from './BiliUtils.interface';
+import { BiliDanmuBulgeContent, BiliDanmuContent, BiliPresentContent, DecodeSocketDataCallback, DecodeSocketDataResult, SocketDataDanmuData, SocketDataGiftData } from './BiliUtils.interface';
+
+const anyMightBeBulgeData = (test: any):test is BiliDanmuBulgeContent => {
+    if (typeof test === 'object') {
+        if ('bulge_display' in test) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+const bulgeDataMightBeInfoPosition = 13;
 
 export class BiliUtils {
     static getRoomNumber(liveHref: string) {
@@ -9,7 +21,7 @@ export class BiliUtils {
         return url.pathname.slice(1, url.pathname.length)
     }
     static stringToBytes(str: string) {
-        const bytes = [];
+        const bytes:number[] = [];
         const len = str.length;
 
         for (let i = 0; i < len; i++) {
@@ -99,6 +111,9 @@ export class BiliUtils {
     static decodeSocketData(data: Blob, callback: DecodeSocketDataCallback) {
         const fr = new FileReader();
         fr.onload = (e) => {
+            if (!e.target) {
+                return
+            }
             let buffer = new Uint8Array(e.target.result as ArrayBufferLike);
 
             const result:DecodeSocketDataResult = {
@@ -107,7 +122,7 @@ export class BiliUtils {
                 ver: 0,
                 op: 0,
                 seq: 0,
-                body: undefined,
+                body: [],
             };
 
             result.packetLen = BiliUtils.readInt(buffer, 0, 4);
@@ -158,14 +173,24 @@ export class BiliUtils {
 
     static getDanmuData(socketDanmu: SocketDataDanmuData):BiliDanmuContent {
         const { info } = socketDanmu;
-        const [_, danmuInfo, [userId, userName]] = info;
+        const [mightHasBulgeDataArray, danmuInfo, [userId, userName]] = info;
+
+        const danmuUser = {
+            id: userId,
+            name: userName,
+        }
+
+        if (anyMightBeBulgeData(mightHasBulgeDataArray[bulgeDataMightBeInfoPosition])) {
+            return {
+                content: danmuInfo,
+                user: danmuUser,
+                bulgeContent: mightHasBulgeDataArray[bulgeDataMightBeInfoPosition]
+            }
+        }
 
         return {
             content: danmuInfo,
-            user: {
-                id: userId,
-                name: userName,
-            }
+            user: danmuUser
         }
     }
 

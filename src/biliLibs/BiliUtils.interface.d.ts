@@ -55,8 +55,20 @@ export interface BiliLiveMotionBase {
     }
 }
 
+export interface BiliDanmuBulgeContent {
+    bulge_display: number, // should display bulge
+    emoticon_unique: string, // sticker unique id: room_roomid_count
+    in_player_area: number,
+    is_dynamic: number,
+
+    url: string,
+    height: number,
+    width: number,
+}
+
 export interface BiliDanmuContent extends BiliLiveMotionBase {
     content: string,
+    bulgeContent?: BiliDanmuBulgeContent
 }
 
 export interface BiliPresentContent extends BiliLiveMotionBase {
